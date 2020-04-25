@@ -14,5 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('main');
+});
+
+Route::group(['prefix' => 'auth', 'as' => 'auth.'], function(){
+    Route::group(['prefix' => 'admin', 'as' => 'google.'], function () {
+        Route::get('callback', '');
+    });
 });
