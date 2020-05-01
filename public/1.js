@@ -12,6 +12,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_web_cam__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-web-cam */ "./node_modules/vue-web-cam/dist/index.js");
 /* harmony import */ var vue_web_cam__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_web_cam__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Shared_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Shared/Layout */ "./resources/js/Shared/Layout.vue");
+function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -41,6 +53,68 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     Layout: _Shared_Layout__WEBPACK_IMPORTED_MODULE_1__["default"],
     'vue-web-cam': vue_web_cam__WEBPACK_IMPORTED_MODULE_0__["WebCam"]
+  },
+  data: function data() {
+    return {
+      img: null,
+      camera: null,
+      deviceId: null,
+      devices: []
+    };
+  },
+  computed: {
+    device: function device() {
+      var _this = this;
+
+      return this.devices.find(function (n) {
+        return n.deviceId === _this.deviceId;
+      });
+    }
+  },
+  watch: {
+    camera: function camera(id) {
+      this.deviceId = id;
+    },
+    devices: function devices() {
+      // Once we have a list select the first one
+      var _this$devices = _toArray(this.devices),
+          first = _this$devices[0],
+          tail = _this$devices.slice(1);
+
+      if (first) {
+        this.camera = first.deviceId;
+        this.deviceId = first.deviceId;
+      }
+    }
+  },
+  methods: {
+    onCapture: function onCapture() {
+      this.img = this.$refs.webcam.capture();
+    },
+    onStarted: function onStarted(stream) {
+      console.log("On Started Event", stream);
+    },
+    onStopped: function onStopped(stream) {
+      console.log("On Stopped Event", stream);
+    },
+    onStop: function onStop() {
+      this.$refs.webcam.stop();
+    },
+    onStart: function onStart() {
+      this.$refs.webcam.start();
+    },
+    onError: function onError(error) {
+      console.log("On Error Event", error);
+    },
+    onCameras: function onCameras(cameras) {
+      this.devices = cameras;
+      console.log("On Cameras Event", cameras);
+    },
+    onCameraChange: function onCameraChange(deviceId) {
+      this.deviceId = deviceId;
+      this.camera = deviceId;
+      console.log("On Camera Change Event", deviceId);
+    }
   }
 });
 
@@ -123,7 +197,17 @@ var render = function() {
         key: "default",
         fn: function() {
           return [
-            _c("vue-web-cam"),
+            _c("vue-web-cam", {
+              ref: "webcam",
+              attrs: { "device-id": _vm.deviceId, width: "100%" },
+              on: {
+                started: _vm.onStarted,
+                stopped: _vm.onStopped,
+                error: _vm.onError,
+                cameras: _vm.onCameras,
+                "camera-change": _vm.onCameraChange
+              }
+            }),
             _vm._v(" "),
             _c(
               "select",
