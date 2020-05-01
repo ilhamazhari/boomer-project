@@ -7,7 +7,7 @@ services:
       - "80:80"
     volumes:
       - ./:/app
-      - ${PWD}/boomer.conf:/etc/nginx/conf.d
+      - ./boomer.conf:/etc/nginx/conf.d/default.conf
     links:
       - php
     depends_on:

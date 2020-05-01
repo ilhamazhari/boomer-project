@@ -8,7 +8,7 @@
         <title>Boomercam</title>
 
         <!-- Styles -->
-        <link href="{{ mix('/css/app.scss') }}" rel="stylesheet">
+        <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
 
         <!-- Script -->
         <script src="{{ mix('/js/app.js') }}" defer></script>

@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('main');
+use Inertia\Inertia;
+
+Route::get('/', function(){
+    return Inertia::render('home');
 });
 
-Route::group(['prefix' => 'auth', 'as' => 'auth.'], function(){
-    Route::group(['prefix' => 'admin', 'as' => 'google.'], function () {
-        Route::get('callback', '');
-    });
+Route::group(['prefix' => 'socialauth', 'as' => 'socialauth.'], function(){
+    Route::get('redirect/{driver}', 'SocialController@redirectToProvider')->name('redirect');
+    Route::get('callback/{driver}', 'SocialController@handleProviderCallback')->name('callback');
 });
